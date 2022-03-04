@@ -12,7 +12,6 @@ class Asherah:
     def __init__(self):
         self.__cobhan = Cobhan()
         self.__libasherah = self.__cobhan.load_library(
-            # self.__cobhan.load_library(
             os.path.join(os.path.dirname(__file__), "libasherah"),
             "libasherah",
             """
@@ -21,7 +20,6 @@ class Asherah:
             int32_t Encrypt(void* partitionIdPtr, void* dataPtr, void* outputEncryptedDataPtr, void* outputEncryptedKeyPtr, void* outputCreatedPtr, void* outputParentKeyIdPtr, void* outputParentKeyCreatedPtr);
             """,
         )
-        # self.__libasherah = self.__cobhan._lib
 
     def setup(self, config: types.AsherahConfig) -> None:
         kms_type_buf = self.__cobhan.str_to_buf(config.kms_type)
