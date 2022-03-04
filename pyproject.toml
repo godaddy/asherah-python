@@ -1,0 +1,52 @@
+[tool.poetry]
+name = "asherah"
+version = "0.1.0"
+description = "Asherah envelope encryption and key rotation library"
+authors = [
+    "Jeremiah Gowdy <jeremiah@gowdy.me>",
+    "Joey Wilhelm <tarkatronic@gmail.com>"
+]
+maintainers = ["GoDaddy <oss@godaddy.com>"]
+license = "MIT"
+include = [
+    "README.md",
+    "CHANGELOG.md",
+    "asherah/libasherah/*",
+]
+keywords = ["encryption"]
+readme = "README.md"
+repository = "https://github.com/godaddy/asherah-python/"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+cobhan = "^0.3.0"
+
+[tool.poetry.dev-dependencies]
+black = "^22.1.0"
+pytest-sugar = "^0.9.4"
+mypy = "^0.931"
+pytest-cov = "^3.0.0"
+pylint = "^2.12.2"
+tox = "^3.24.5"
+pytest = "^7.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+ignore_missing_imports = true
