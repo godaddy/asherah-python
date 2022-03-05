@@ -1,12 +1,18 @@
+"""Main Asherah class, for encrypting and decrypting of data"""
+# pylint: disable=line-too-long, too-many-locals
+
 import os
-from cobhan import Cobhan
 from datetime import datetime, timezone
 from typing import ByteString, Union
+
+from cobhan import Cobhan
 
 from . import exceptions, types
 
 
 class Asherah:
+    """The main class for providing encryption and decryption functionality"""
+
     KEY_SIZE = 64
 
     def __init__(self):
@@ -22,6 +28,7 @@ class Asherah:
         )
 
     def setup(self, config: types.AsherahConfig) -> None:
+        """Set up/initialize the underlying encryption library."""
         kms_type_buf = self.__cobhan.str_to_buf(config.kms_type)
         metastore_buf = self.__cobhan.str_to_buf(config.metastore)
         service_name_buf = self.__cobhan.str_to_buf(config.service_name)
@@ -61,6 +68,7 @@ class Asherah:
             )
 
     def encrypt(self, partition_id: str, data: Union[ByteString, str]):
+        """Encrypt a chunk of data"""
         if isinstance(data, str):
             data = data.encode("utf-8")
         # Inputs
@@ -108,6 +116,7 @@ class Asherah:
     def decrypt(
         self, partition_id: str, data_row_record: types.DataRowRecord
     ) -> bytearray:
+        """Decrypt data that was previously encrypted by Asherah"""
         # Inputs
         partition_id_buf = self.__cobhan.str_to_buf(partition_id)
         encrypted_data_buf = self.__cobhan.bytearray_to_buf(data_row_record.data)
