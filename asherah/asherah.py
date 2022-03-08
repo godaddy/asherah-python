@@ -1,6 +1,7 @@
 """Main Asherah class, for encrypting and decrypting of data"""
 # pylint: disable=line-too-long, too-many-locals
 
+import json
 import os
 from datetime import datetime, timezone
 from typing import ByteString, Union
@@ -21,7 +22,7 @@ class Asherah:
             os.path.join(os.path.dirname(__file__), "libasherah"),
             "libasherah",
             """
-            int32_t Setup(void* kmsTypePtr, void* metastorePtr, void* rdbmsConnectionStringPtr, void* dynamoDbEndpointPtr, void* dynamoDbRegionPtr, void* dynamoDbTableNamePtr, int32_t enableRegionSuffixInt, void* serviceNamePtr, void* productIdPtr, void* preferredRegionPtr, void* regionMapPtr, int32_t verboseInt, int32_t sessionCacheInt, int32_t debugOutputInt);
+            int32_t SetupJson(void* configJson);
             int32_t Decrypt(void* partitionIdPtr, void* encryptedDataPtr, void* encryptedKeyPtr, int64_t created, void* parentKeyIdPtr, int64_t parentKeyCreated, void* outputDecryptedDataPtr);
             int32_t Encrypt(void* partitionIdPtr, void* dataPtr, void* outputEncryptedDataPtr, void* outputEncryptedKeyPtr, void* outputCreatedPtr, void* outputParentKeyIdPtr, void* outputParentKeyCreatedPtr);
             """,
@@ -29,39 +30,9 @@ class Asherah:
 
     def setup(self, config: types.AsherahConfig) -> None:
         """Set up/initialize the underlying encryption library."""
-        kms_type_buf = self.__cobhan.str_to_buf(config.kms_type)
-        metastore_buf = self.__cobhan.str_to_buf(config.metastore)
-        service_name_buf = self.__cobhan.str_to_buf(config.service_name)
-        product_id_buf = self.__cobhan.str_to_buf(config.product_id)
-        rdbms_connection_string_buf = self.__cobhan.str_to_buf(
-            config.rdbms_connection_string
-        )
-        dynamo_db_endpoint_buf = self.__cobhan.str_to_buf(config.dynamo_db_endpoint)
-        dynamo_db_region_buf = self.__cobhan.str_to_buf(config.dynamo_db_region)
-        dynamo_db_table_name_buf = self.__cobhan.str_to_buf(config.dynamo_db_table_name)
-        enable_region_suffix_int = int(config.enable_region_suffix)
-        preferred_region_buf = self.__cobhan.str_to_buf(config.preferred_region)
-        region_map_buf = self.__cobhan.str_to_buf(config.region_map)
-        verbose_int = int(config.verbose)
-        session_cache_int = int(config.session_cache)
-        debug_output_int = int(config.debug_output)
-
-        result = self.__libasherah.Setup(
-            kms_type_buf,
-            metastore_buf,
-            rdbms_connection_string_buf,
-            dynamo_db_endpoint_buf,
-            dynamo_db_region_buf,
-            dynamo_db_table_name_buf,
-            enable_region_suffix_int,
-            service_name_buf,
-            product_id_buf,
-            preferred_region_buf,
-            region_map_buf,
-            verbose_int,
-            session_cache_int,
-            debug_output_int,
-        )
+        config_json = json.dumps(config.to_json())
+        config_buf = self.__cobhan.str_to_buf(config_json)
+        result = self.__libasherah.SetupJson(config_buf)
         if result < 0:
             raise exceptions.AsherahException(
                 f"Setup failed with error number {result}"
