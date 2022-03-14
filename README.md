@@ -12,12 +12,12 @@ Example code:
 from asherah import Asherah, AsherahConfig
 
 config = AsherahConfig(
-    kms_type='static',
+    kms='static',
     metastore='memory',
     service_name='TestService',
     product_id='TestProduct',
     verbose=True,
-    session_cache=True
+    enable_session_caching=True
 )
 crypt = Asherah()
 crypt.setup(config)
