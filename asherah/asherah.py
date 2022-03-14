@@ -43,6 +43,10 @@ class Asherah:
                 f"Setup failed with error number {result}"
             )
 
+    def shutdown(self):
+        """Shut down and clean up the Asherah instance"""
+        self.__libasherah.Shutdown()
+
     def encrypt(self, partition_id: str, data: Union[ByteString, str]):
         """Encrypt a chunk of data"""
         if isinstance(data, str):
