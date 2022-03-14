@@ -22,9 +22,12 @@ class Asherah:
             os.path.join(os.path.dirname(__file__), "libasherah"),
             "libasherah",
             """
+            void Shutdown();
             int32_t SetupJson(void* configJson);
             int32_t Decrypt(void* partitionIdPtr, void* encryptedDataPtr, void* encryptedKeyPtr, int64_t created, void* parentKeyIdPtr, int64_t parentKeyCreated, void* outputDecryptedDataPtr);
             int32_t Encrypt(void* partitionIdPtr, void* dataPtr, void* outputEncryptedDataPtr, void* outputEncryptedKeyPtr, void* outputCreatedPtr, void* outputParentKeyIdPtr, void* outputParentKeyCreatedPtr);
+            int32_t EncryptToJson(void* partitionIdPtr, void* dataPtr, void* jsonPtr);
+            int32_t DecryptFromJson(void* partitionIdPtr, void* jsonPtr, void* dataPtr);
             """,
         )
 
