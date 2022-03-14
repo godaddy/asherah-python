@@ -6,8 +6,9 @@ from asherah import Asherah, AsherahConfig
 
 
 class AsherahTest(TestCase):
-    def setUp(self) -> None:
-        self.config = AsherahConfig(
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.config = AsherahConfig(
             kms="static",
             metastore="memory",
             service_name="TestService",
@@ -15,13 +16,14 @@ class AsherahTest(TestCase):
             verbose=True,
             enable_session_caching=True,
         )
-        self.asherah = Asherah()
-        self.asherah.setup(self.config)
-        return super().setUp()
+        cls.asherah = Asherah()
+        cls.asherah.setup(cls.config)
+        return super().setUpClass()
 
-    def tearDown(self) -> None:
-        self.asherah.shutdown()
-        return super().tearDown()
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.asherah.shutdown()
+        return super().tearDownClass()
 
     def test_input_string_is_not_in_encrypted_data(self):
         data = "mysecretdata"
