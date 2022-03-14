@@ -1,6 +1,8 @@
 """Main Asherah class, for encrypting and decrypting of data"""
 # pylint: disable=line-too-long, too-many-locals
 
+from __future__ import annotations
+
 import json
 import os
 from datetime import datetime, timezone
@@ -14,6 +16,7 @@ from . import exceptions, types
 class Asherah:
     """The main class for providing encryption and decryption functionality"""
 
+    JSON_OVERHEAD = 256
     KEY_SIZE = 64
 
     def __init__(self):
@@ -49,71 +52,27 @@ class Asherah:
         partition_id_buf = self.__cobhan.str_to_buf(partition_id)
         data_buf = self.__cobhan.bytearray_to_buf(data)
         # Outputs
-        encrypted_data_buf = self.__cobhan.allocate_buf(len(data) + self.KEY_SIZE)
-        encrypted_key_buf = self.__cobhan.allocate_buf(self.KEY_SIZE)
-        created_buf = self.__cobhan.int_to_buf(0)
-        parent_key_id_buf = self.__cobhan.allocate_buf(self.KEY_SIZE)
-        parent_key_created_buf = self.__cobhan.int_to_buf(0)
+        json_buf = self.__cobhan.allocate_buf(len(data_buf) + self.JSON_OVERHEAD)
 
-        result = self.__libasherah.Encrypt(
-            partition_id_buf,
-            data_buf,
-            encrypted_data_buf,
-            encrypted_key_buf,
-            created_buf,
-            parent_key_id_buf,
-            parent_key_created_buf,
-        )
+        result = self.__libasherah.EncryptToJson(partition_id_buf, data_buf, json_buf)
         if result < 0:
             raise exceptions.AsherahException(
                 f"Encrypt failed with error number {result}"
             )
-        data_row_record = types.DataRowRecord(
-            data=self.__cobhan.buf_to_bytearray(encrypted_data_buf),
-            key=types.EnvelopeKeyRecord(
-                encrypted_key=self.__cobhan.buf_to_bytearray(encrypted_key_buf),
-                created=datetime.fromtimestamp(
-                    self.__cobhan.buf_to_int(created_buf), tz=timezone.utc
-                ),
-                parent_key_meta=types.KeyMeta(
-                    id=self.__cobhan.buf_to_str(parent_key_id_buf),
-                    created=datetime.fromtimestamp(
-                        self.__cobhan.buf_to_int(parent_key_created_buf),
-                        tz=timezone.utc,
-                    ),
-                ),
-            ),
-        )
+        return self.__cobhan.buf_to_str(json_buf)
 
-        return data_row_record
-
-    def decrypt(
-        self, partition_id: str, data_row_record: types.DataRowRecord
-    ) -> bytearray:
+    def decrypt(self, partition_id: str, data_row_record: str) -> bytearray:
         """Decrypt data that was previously encrypted by Asherah"""
         # Inputs
         partition_id_buf = self.__cobhan.str_to_buf(partition_id)
-        encrypted_data_buf = self.__cobhan.bytearray_to_buf(data_row_record.data)
-        encrypted_key_buf = self.__cobhan.bytearray_to_buf(
-            data_row_record.key.encrypted_key
-        )
-        created = int(data_row_record.key.created.timestamp())
-        parent_key_id_buf = self.__cobhan.str_to_buf(
-            data_row_record.key.parent_key_meta.id
-        )
-        parent_key_created = int(
-            data_row_record.key.parent_key_meta.created.timestamp()
-        )
-        # Output
-        data_buf = self.__cobhan.allocate_buf(len(encrypted_data_buf) + self.KEY_SIZE)
+        json_buf = self.__cobhan.str_to_buf(data_row_record)
 
-        result = self.__libasherah.Decrypt(
+        # Output
+        data_buf = self.__cobhan.allocate_buf(len(json_buf))
+
+        result = self.__libasherah.DecryptFromJson(
             partition_id_buf,
-            encrypted_data_buf,
-            encrypted_key_buf,
-            created,
-            parent_key_id_buf,
-            parent_key_created,
+            json_buf,
             data_buf,
         )
 
