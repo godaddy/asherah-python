@@ -4,8 +4,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from datetime import datetime
-from typing import ByteString, Dict, Optional
+from typing import Dict, Optional
 
 from enum import Enum
 
@@ -94,28 +93,3 @@ class AsherahConfig:
             return "".join(parts)
 
         return {translate_key(key): val for key, val in asdict(self).items()}
-
-
-@dataclass
-class KeyMeta:
-    """Metadata about an encryption key"""
-
-    id: str
-    created: datetime
-
-
-@dataclass
-class EnvelopeKeyRecord:
-    """Information about an encryption envelope"""
-
-    encrypted_key: ByteString
-    created: datetime
-    parent_key_meta: KeyMeta
-
-
-@dataclass
-class DataRowRecord:
-    """Encrypted data and its related information"""
-
-    data: ByteString
-    key: EnvelopeKeyRecord
