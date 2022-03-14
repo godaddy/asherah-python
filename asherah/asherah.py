@@ -1,5 +1,5 @@
 """Main Asherah class, for encrypting and decrypting of data"""
-# pylint: disable=line-too-long, too-many-locals
+# pylint: disable=line-too-long
 
 from __future__ import annotations
 

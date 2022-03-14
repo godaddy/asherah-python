@@ -1,5 +1,5 @@
 """Type definitions for the Asherah library"""
-# pylint: disable=too-many-instance-attributes,invalid-name
+# pylint: disable=too-many-instance-attributes
 
 from __future__ import annotations
 
@@ -10,20 +10,26 @@ from enum import Enum
 
 
 class KMSType(Enum):
-    aws = "aws"
-    static = "static"
+    """Supported types of KMS services"""
+
+    AWS = "aws"
+    STATIC = "static"
 
 
 class MetastoreType(Enum):
-    rdbms = "rdbms"
-    dynamodb = "dynamodb"
-    memory = "memory"
+    """Supported types of metastores"""
+
+    RDBMS = "rdbms"
+    DYNAMODB = "dynamodb"
+    MEMORY = "memory"
 
 
 class ReadConsistencyType(Enum):
-    eventual = "eventual"
-    global_ = "global"
-    session = "session"
+    """Supported read consistency types"""
+
+    EVENTUAL = "eventual"
+    GLOBAL = "global"
+    SESSION = "session"
 
 
 @dataclass
@@ -80,6 +86,8 @@ class AsherahConfig:
     session_cache_duration: Optional[int] = None
 
     def to_json(self):
+        """Produce a JSON dictionary in a form expected by Asherah"""
+
         def translate_key(key):
             """Translate snake_case into camelCase."""
             parts = key.split("_")
