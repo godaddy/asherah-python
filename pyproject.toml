@@ -33,7 +33,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-cobhan = "^0.3.0"
+cobhan = "^0.4.2"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
@@ -48,5 +48,26 @@ pytest = "^7.0.1"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.coverage.run]
+branch = true
+source = ["asherah"]
+
+[tool.coverage.report]
+exclude_lines = [
+  # Have to re-enable the standard pragma
+  "pragma: no cover", # Don't complain about missing debug-only code:
+  "def __repr__",
+  "if self.debug", # Don't complain if tests don't hit defensive assertion code:
+  "raise AssertionError",
+  "raise NotImplementedError", # Don't complain if non-runnable code isn't run:
+  "if 0:",
+  "if __name__ == .__main__.:", # Don't complain about mypy-specific code
+  "if TYPE_CHECKING:",
+]
+ignore_errors = true
+
 [tool.mypy]
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report term --cov-report term-missing --cov-report xml --durations=0"
