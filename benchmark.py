@@ -4,11 +4,11 @@ import timeit
 from asherah import Asherah, AsherahConfig
 
 config = AsherahConfig(
-    kms_type="static",
+    kms="static",
     metastore="memory",
     service_name="TestService",
     product_id="TestProduct",
-    session_cache=True,
+    enable_session_caching=True,
 )
 crypt = Asherah()
 crypt.setup(config)
