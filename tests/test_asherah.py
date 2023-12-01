@@ -30,8 +30,8 @@ class AsherahTest(TestCase):
         encrypted = self.asherah.encrypt("partition", data)
         self.assertFalse(data in encrypted)
 
-    def test_decrypted_data_equals_original_data(self):
-        data = b"mysecretdata"
+    def test_decrypted_data_equals_original_data_string(self):
+        data = "mysecretdata"
         encrypted = self.asherah.encrypt("partition", data)
         decrypted = self.asherah.decrypt("partition", encrypted)
         self.assertEqual(decrypted, data)
