@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "asherah"
-version = "0.3.4"
+version = "0.3.5"
 description = "Asherah envelope encryption and key rotation library"
 authors = [
     "Jeremiah Gowdy <jeremiah@gowdy.me>",
