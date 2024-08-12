@@ -32,7 +32,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10"
 cobhan = "^0.4.3"
 
 [tool.poetry.dev-dependencies]
