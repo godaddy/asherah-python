@@ -60,6 +60,12 @@ class AsherahTest(TestCase):
         decrypted = self.asherah.decrypt("partition", encrypted).decode()  # Fix: decode bytes to string
         self.assertEqual(decrypted, data)
 
+    def test_encrypt_decrypt_large_data(self):
+        data = b"a" * 1024 * 1024
+        encrypted = self.asherah.encrypt("partition", data)
+        decrypted = self.asherah.decrypt("partition", encrypted)
+        self.assertEqual(decrypted, data)
+
     def test_decrypted_data_equals_original_data_bytes(self):
         data = b"mysecretdata"
         encrypted = self.asherah.encrypt("partition", data)
